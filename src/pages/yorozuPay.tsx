@@ -1,18 +1,15 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { HomeView } from "../views";
+import { YorozuPayView } from "../views";
 
 const Home: NextPage = (props) => {
   return (
     <div>
       <Head>
-        <title>Yorozuya Home</title>
-        <meta
-          name="description"
-          content="Yorozuya Home"
-        />
+        <title>Yorozu Pay</title>
+        <meta name="description" content="Yorozu Pay" />
       </Head>
-      <HomeView />
+      <YorozuPayView />
     </div>
   );
 };
