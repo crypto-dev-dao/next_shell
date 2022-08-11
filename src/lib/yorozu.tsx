@@ -5,11 +5,11 @@ export class YorozuAccount {
     this.name = "Yorozu PAY";
   }
 
-  set(name: string) {
+  setName(name: string) {
     this.name = name;
   }
 
-  get() {
+  getName() {
     return this.name;
   }
 

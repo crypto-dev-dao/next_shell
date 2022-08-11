@@ -16,8 +16,8 @@ export default function Navbar() {
           </div>
           <div className="text-left px-2 mr-5">
             <span className="text-lg font-bold">
-              <Link href="/yorozuPay">
-                <a>Yorozu Pay</a>
+              <Link href="/payment">
+                <a>Payment</a>
               </Link>
             </span>
           </div>

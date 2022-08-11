@@ -1,5 +1,5 @@
 export { HomeView } from "./HomeView";
-export { YorozuPayView } from "./YorozuPayView";
+export { PaymentView } from "./PaymentView";
 export { TermsOfUseView } from "./TermsOfUseView";
 export { FeeView } from "./FeeView";
 export { QaView } from "./QaView";

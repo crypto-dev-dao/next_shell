@@ -66,7 +66,7 @@ function a11yProps(index: number) {
   };
 }
 
-export const YorozuPayView: FC = ({}) => {
+export const PaymentView: FC = ({}) => {
   const [isAirDropped, setIsAirDropped] = useState(false);
   const wallet = useAnchorWallet();
 
@@ -86,7 +86,7 @@ export const YorozuPayView: FC = ({}) => {
             aria-label="basic tabs example"
           >
             <Tab label="Payment Terminal" {...a11yProps(0)} />
-            <Tab label="Yorozu Account" {...a11yProps(1)} />
+            <Tab label="Account" {...a11yProps(1)} />
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>

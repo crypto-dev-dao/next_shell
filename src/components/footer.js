@@ -13,7 +13,7 @@ export default function Footer() {
         </div>
         <div className="flex-none">
           <div className="text-left leading-10 px-2 mx-2">
-            <span className="text-sm">© 2022 Yorozuya DAO</span>
+            <span className="text-sm">© 2022 Yorozu-Ya DAO</span>
           </div>
           <div className="text-left leading-10 px-2 mx-2">
             <span className="text-sm">

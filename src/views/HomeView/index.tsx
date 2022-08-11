@@ -66,7 +66,7 @@ export const HomeView: FC = ({}) => {
           <div className="max-w-2xl text-2xl opacity-80">
           Yorozu Pay is a service that allows you to make payments using cryptocurrencies by scanning a QR code.
             {/* <h1 className="text-3xl font-bold">
-              {!publicKey ? <>Welcome to Crypto Yorozuya!</> : null}
+              {!publicKey ? <>Welcome</> : null}
             </h1> */}
           </div>
         </div>
