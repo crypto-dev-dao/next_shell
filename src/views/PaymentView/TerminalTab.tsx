@@ -35,6 +35,23 @@ import { SubdirectoryArrowLeftSharp } from "@mui/icons-material";
 
 export const TerminalTab = () => {
   const [currency, setCurrency] = useState<number>(0);
+  const [rate, setRate] = useState<number>(0);
+
+  useEffect(() => {
+    getExchangeRate().then((initialRate) => {
+      setRate(initialRate);
+    }).catch(e => console.error(e.message));
+    const timerId = setInterval(async () => {
+      const tempRate = await getExchangeRate();
+      setRate(tempRate);
+    }, 5000);
+    return () => clearInterval(timerId);
+  }, []);
+
+  // 更新されたrateの反映
+  useEffect(() => {
+    return () => {};
+  }, [rate]);
 
   // 更新されたcurrencyの反映
   useEffect(() => {
@@ -79,7 +96,7 @@ export const TerminalTab = () => {
         justifyContent="center"
         flexDirection={"row"}
       >
-        <RateConversionScreen currency={currency}/>
+        <RateConversionScreen rate={rate} currency={currency}/>
       </Grid>
       <Grid
         item
@@ -169,47 +186,29 @@ const boxStyle = {
 };
 
 type PropsRCS = {
-  currency: number
+  rate: number,
+  currency: number,
 };
-const RateConversionScreen: FC<PropsRCS> = ({currency}) => {
-  const [rate, setRate] = useState<number>(0);
-  const [sol, setSol] = useState<string>("0");
+const RateConversionScreen: FC<PropsRCS> = ({rate, currency}) => {
   console.log(rate);
 
-  // 5秒ごとのrate更新
-  useEffect(() => {
-    getExchangeRate().then((initialRate) => {
-      setRate(initialRate);
-    }).catch(e => console.error(e.message));
-    const timerId = setInterval(async () => {
-      const tempRate = await getExchangeRate();
-      setRate(tempRate);
-    }, 5000);
-    return () => clearInterval(timerId);
-  }, []);
-
-  // 更新されたrateの反映
-  useEffect(() => {
-    updateSol(rate);
-    return () => {};
-  }, [rate]);
-
-  const updateSol = (rate_: number) => {
+  const updateSol = (rate_: number, currency_: number): string => {
     if (rate_ === 0) {
-      setSol("0");
+      return "0";
     } else {
-      const tempSol = currency / rate_;
+      const tempSol = currency_ / rate_;
       const strSol = tempSol.toString();
       const upperLower = strSol.split(".");
       if (upperLower.length !== 2) {
-        setSol(strSol);
+        return strSol;
       } else {
         const result = `${upperLower[0]}.${upperLower[1].substring(0, 6)}`;
-        setSol(result);
+        return result;
       }
     }
   }
 
+  const sol = updateSol(rate, currency);
   return (
     <div className="p-5 flex">
       <Stack spacing={1}>
