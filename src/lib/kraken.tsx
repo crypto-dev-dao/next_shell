@@ -29,31 +29,24 @@ async function getData(symbol: string): Promise<number>  {
   return 0;
 }
 
-const useFindTicker = () => {
-  const [data, setData] = useState(0);
+const useFindTicker = async (): Promise<number> => {
+  try {
+    const rate1 = await getData("SOLUSD");
+    const rate2 = await getData("USDJPY");
 
-  return {
-    data,
-    find: async () => {
-      try {
-        const rate1 = await getData("SOLUSD");
-        const rate2 = await getData("USDJPY");
-  
-        const rate = rate1 * rate2;
-        setData(rate);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  };
+    const rate = rate1 * rate2;
+    return rate;
+  } catch (e) {
+    console.error(e);
+    throw(e);
+  }
 };
 
-export const getExchangeRate = (symbol: string = "JPY/SOL") : number =>  {
+export const getExchangeRate = async (symbol: string = "JPY/SOL") : Promise<number> =>  {
   if (symbol != "JPY/SOL") {
     return 0;
   }
 
-  const { data, find } = useFindTicker();
-  find();
-  return Math.round(data);
+  const rate: number = await useFindTicker();
+  return Math.round(rate);
 };

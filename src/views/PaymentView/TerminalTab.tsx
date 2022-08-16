@@ -154,8 +154,24 @@ const boxStyle = {
 };
 
 const RateConversionScreen = () => {
-  const rate = getExchangeRate();
+  const [rate, setRate] = useState<number>();
   console.log(rate);
+
+  // 5秒ごとのrate更新
+  useEffect(() => {
+    getExchangeRate().then((initialRate) => {
+      setRate(initialRate);
+    }).catch(e => console.error(e.message));
+    const timerId = setInterval(async () => {
+      setRate(await getExchangeRate());
+    }, 5000);
+    return () => clearInterval(timerId);
+  }, []);
+
+  // 更新されたrateの反映
+  useEffect(() => {
+    return () => {};
+  }, [rate]);
 
   return (
     <div className="p-5 flex">
