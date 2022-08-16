@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FC, useEffect, useState } from "react";
+import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { HomeIcon, UserIcon } from "@heroicons/react/outline";
@@ -31,8 +31,20 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { bgcolor } from "@mui/system";
 import { blueGrey } from "@mui/material/colors";
+import { SubdirectoryArrowLeftSharp } from "@mui/icons-material";
 
 export const TerminalTab = () => {
+  const [currency, setCurrency] = useState<number>(0);
+
+  // 更新されたcurrencyの反映
+  useEffect(() => {
+    return () => {};
+  }, [currency]);
+  
+  const onUpdateCurrency = (value: number) => {
+    setCurrency(value);
+  };
+
   return (
     <Grid
       container
@@ -58,7 +70,7 @@ export const TerminalTab = () => {
         justifyContent="center"
         flexDirection={"row"}
       >
-        <ExecutPaymentScreen />
+        <ExecutPaymentScreen onUpdateCurrency={onUpdateCurrency}/>
       </Grid>
       <Grid
         item
@@ -67,7 +79,7 @@ export const TerminalTab = () => {
         justifyContent="center"
         flexDirection={"row"}
       >
-        <RateConversionScreen />
+        <RateConversionScreen currency={currency}/>
       </Grid>
       <Grid
         item
@@ -135,10 +147,13 @@ const ExecuteButton = () => {
   );
 };
 
-const ExecutPaymentScreen = () => {
+type PropsEPS = {
+  onUpdateCurrency: (value: number) => void
+};
+const ExecutPaymentScreen: FC<PropsEPS> = ({onUpdateCurrency}) => {
   return (
     <div className="">
-      <NumericInput id="yen-amount" />
+      <NumericInput id="yen-amount" onUpdateCurrency={onUpdateCurrency} />
     </div>
   );
 };
@@ -153,8 +168,12 @@ const boxStyle = {
   flex: 0
 };
 
-const RateConversionScreen = () => {
-  const [rate, setRate] = useState<number>();
+type PropsRCS = {
+  currency: number
+};
+const RateConversionScreen: FC<PropsRCS> = ({currency}) => {
+  const [rate, setRate] = useState<number>(0);
+  const [sol, setSol] = useState<string>("0");
   console.log(rate);
 
   // 5秒ごとのrate更新
@@ -163,15 +182,33 @@ const RateConversionScreen = () => {
       setRate(initialRate);
     }).catch(e => console.error(e.message));
     const timerId = setInterval(async () => {
-      setRate(await getExchangeRate());
+      const tempRate = await getExchangeRate();
+      setRate(tempRate);
     }, 5000);
     return () => clearInterval(timerId);
   }, []);
 
   // 更新されたrateの反映
   useEffect(() => {
+    updateSol(rate);
     return () => {};
   }, [rate]);
+
+  const updateSol = (rate_: number) => {
+    if (rate_ === 0) {
+      setSol("0");
+    } else {
+      const tempSol = currency / rate_;
+      const strSol = tempSol.toString();
+      const upperLower = strSol.split(".");
+      if (upperLower.length !== 2) {
+        setSol(strSol);
+      } else {
+        const result = `${upperLower[0]}.${upperLower[1].substring(0, 6)}`;
+        setSol(result);
+      }
+    }
+  }
 
   return (
     <div className="p-5 flex">
@@ -189,7 +226,7 @@ const RateConversionScreen = () => {
             padding={1}
           >
             <div id="sol-amount" className="font-bold text-xl text-red-700/75">
-              0.0123
+              {sol}
             </div>
             <div className="pl-2 text-gray-600">SOL</div>
           </Stack>

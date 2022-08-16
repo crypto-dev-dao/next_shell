@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Keyboard from "react-simple-keyboard";
@@ -11,20 +11,23 @@ import { NumericTextField } from "components";
 type Props = {
   layoutName?: string;
   id: string,
+  onUpdateCurrency: (value: number) => void
 };
 
-export const NumericInput: FC<Props> = ({ layoutName = "default", id }) => {
+export const NumericInput: FC<Props> = ({ layoutName = "default", id, onUpdateCurrency }) => {
   const [input, setInput] = useState("￥0");
   const [currency, setCurrency] = useState("￥0");
 
   const onChange = (value: string) => {
     console.log("Input changed", value);
       setInput(value);
-      if (isNaN(parseFloat(value)))
+      if (isNaN(parseFloat(value))) {
         setCurrency("￥0");
-      else {
+        onUpdateCurrency(0);
+      } else {
         const currency = new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(parseFloat(value));
         setCurrency(currency);
+        onUpdateCurrency(parseFloat(value));
       }
   };
 
